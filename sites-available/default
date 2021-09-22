@@ -1,0 +1,133 @@
+######################################################################
+##			FreeRadius Configration	Edited By Mr.Ahmed Nour			##
+######################################################################
+#
+#
+#
+######################################################################
+##				Server Listen Authorization && Accounting			##
+######################################################################
+
+server default {
+
+listen {
+	type = auth
+	ipaddr = *
+	port = 0
+	limit {
+	      max_connections = 0
+	      lifetime = 0
+	      idle_timeout = 30
+	}
+}
+
+listen {
+	ipaddr = *
+	port = 0
+	type = acct
+	limit {
+	}
+}
+
+######################################################################
+##						Authorization Section						##
+######################################################################
+
+authorize {
+	loginUserViaRest
+	pap
+	chap
+	mschap
+}
+
+######################################################################
+##					Authentication Modules Section					##
+######################################################################
+
+authenticate {
+	Auth-Type rest {
+      loginUserViaRest
+    }
+	Auth-Type PAP {
+		pap
+	}
+	Auth-Type CHAP {
+		chap
+	}
+	mschap
+}
+
+######################################################################
+##						Pre-accounting Section						##
+######################################################################
+
+preacct {
+	acct_unique
+}
+
+######################################################################
+##						Accounting Section							##
+######################################################################
+
+accounting {
+	## Save Accounting Data On MySQL Database ##
+	
+	#if (Acct-Status-Type == Start) {  
+   #}
+
+	update {
+	     # get user id
+        reply:User-Id := "%{redis:HGET %{NAS-Identifier}_%{User-Name} user_id}"
+        reply:Network-Id := "%{redis:HGET %{NAS-Identifier}_%{User-Name} network_id}"
+        reply:Userable-Type := "%{redis:HGET %{NAS-Identifier}_%{User-Name} userable_type}"
+    }
+
+    if (Acct-Status-Type == Interim-Update) {
+
+		  # send broadband users to laravel
+        if ("%{redis:HGET %{NAS-Identifier}_%{User-Name} connection_type}" == 'PPP') {
+           accountingForPPPUsers
+        }
+    }
+
+	sql
+	if (Acct-Status-Type == Stop) {
+	   # delete key from redis cache
+	   update {
+            control:Tmp-Integer-0 := "%{redis:DEL %{NAS-Identifier}_%{User-Name}}"
+        }
+	}
+	attr_filter.accounting_response
+}
+
+
+######################################################################
+##						Session Section								##
+######################################################################
+
+session {
+#	sql
+}
+
+######################################################################
+##					Post-Authentication Section						##
+######################################################################
+
+
+######################################################################
+##						Pre-Proxy Section							##
+######################################################################
+
+pre-proxy {
+
+}
+
+######################################################################
+##						Post-Proxy Section							##
+######################################################################
+
+post-proxy {
+
+}
+
+}

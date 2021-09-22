@@ -1,0 +1,66 @@
+
+rest loginUserViaRest{
+	authorize {
+	uri = "http://connectpro.test/api/user/login"
+		method = 'post'
+		body = 'post'
+		data = 'nas_serial=%{NAS-Identifier}&username=%{User-Name}\
+		&macaddress=%{Calling-Station-Id}&ipaddress=%{Framed-IP-Address}\
+		&servicetype=%{Service-Type}'
+		force_to = 'json'
+	}
+	
+
+	#  Accounting/Post-auth
+	post-auth {
+		uri = "http://connectpro.test/api/user/login"
+		method = 'post'
+		body = 'post'
+		data = 'nas_serial=%{NAS-Identifier}&username=%{User-Name}&macaddress=%{Calling-Station-Id}&\
+		ipaddress=%{Framed-IP-Address}&servicetype=%{Service-Type}\
+		&nasporttype=%{NAS-Port-Type}'
+		force_to = 'json'
+	}
+	
+
+	pool {
+		start = ${thread[pool].start_servers}
+		min = ${thread[pool].min_spare_servers}
+		max = ${thread[pool].max_servers}
+		spare = ${thread[pool].max_spare_servers}
+		uses = 0
+		retry_delay = 30
+		lifetime = 0
+		idle_timeout = 60
+	}
+
+}
+
+
+rest server_stoped{
+	accounting {
+	        uri = "http://connectpro.test/api/server/logout"
+		    method = 'post'
+		    body = 'post'
+		    data = 'nas_serial=%{NAS-Identifier}&username=%{User-Name}'
+		    force_to = 'json'
+	}
+
+}
+
+
+rest accountingForPPPUsers{
+
+	accounting {
+	        uri = "http://connectpro.test/api/user/ppp/acountings"
+		    method = 'post'
+		    body = 'post'
+		    data = 'nas_serial=%{NAS-Identifier}&username=%{User-Name}\
+		&macaddress=%{Calling-Station-Id}&ipaddress=%{Framed-IP-Address}\
+		&upload=%{expr:(&Acct-Input-Gigawords << 32) | &Acct-Input-Octets}\
+		&download=%{expr:(&Acct-Output-Gigawords << 32) | &Acct-Output-Octets}\
+		&nas_ip=%{NAS-IP-Address}'
+						 
+		force_to = 'json'
+	}
+}
