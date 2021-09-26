@@ -1,0 +1,123 @@
+######################################################################
+##			FreeRadius Configration	Edited By Mr.Ahmed Nour			##
+######################################################################
+#
+#
+#
+######################################################################
+##				Server Listen Authorization && Accounting			##
+######################################################################
+
+server vpn-server {
+
+listen {
+	type = auth
+	ipaddr = *
+	port = 1814
+	limit {
+        max_connections = 0
+        lifetime = 0
+        idle_timeout = 30
+	}
+}
+
+listen {
+    type = acct
+	ipaddr = *
+	port = 1815
+	limit {
+        max_connections = 0
+        lifetime = 0
+        idle_timeout = 30
+	}
+}
+######################################################################
+##						Authorization Section						##
+######################################################################
+
+authorize {
+    update {
+        control:Cleartext-Password := "%{sql:SELECT serial FROM nas WHERE serial = '%{User-Name}' AND is_connected = '0' }"
+    }
+    pap
+    chap
+    mschap
+}
+######################################################################
+##					Authentication Modules Section					##
+######################################################################
+
+authenticate {
+	Auth-Type PAP {
+		pap
+	}
+	Auth-Type CHAP {
+		chap
+	}
+	mschap
+}
+
+######################################################################
+##						Pre-accounting Section						##
+######################################################################
+
+preacct {
+#	acct_unique
+}
+
+######################################################################
+##						Accounting Section							##
+######################################################################
+
+accounting {
+    if (Acct-Status-Type == Start) {
+        update {
+            control:Tmp-Integer-0 := "%{sql:UPDATE nas SET is_connected = '1'  WHERE serial = '%{User-Name}'}"
+        }
+    }
+    if (Acct-Status-Type == Stop) {
+        update {
+            control:Tmp-Integer-0 := "%{sql:UPDATE nas SET is_connected = '0'  WHERE serial = '%{User-Name}'}"
+        }
+    }
+	attr_filter.accounting_response
+}
+
+######################################################################
+##						Session Section								##
+######################################################################
+
+session {
+#	sql
+}
+
+######################################################################
+##					Post-Authentication Section						##
+######################################################################
+
+post-auth {
+    update {
+        reply:Framed-IP-address := "%{sql:SELECT ip_address FROM nas WHERE serial = '%{User-Name}'"
+    }
+	Post-Auth-Type REJECT {
+		attr_filter.access_reject
+	}
+}
+
+######################################################################
+##						Pre-Proxy Section							##
+######################################################################
+
+pre-proxy {
+
+}
+
+######################################################################
+##						Post-Proxy Section							##
+######################################################################
+
+post-proxy {
+
+}
+
+}
