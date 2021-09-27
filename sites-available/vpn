@@ -97,7 +97,7 @@ session {
 
 post-auth {
     update {
-        reply:Framed-IP-address := "%{sql:SELECT ip_address FROM nas WHERE serial = '%{User-Name}'"
+        reply:Framed-IP-address := "%{sql:SELECT ip_address FROM nas WHERE serial = '%{User-Name}'}"
     }
 	Post-Auth-Type REJECT {
 		attr_filter.access_reject
