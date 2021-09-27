@@ -1,7 +1,7 @@
 
 rest loginUserViaRest{
 	authorize {
-	uri = "127.0.0.1/api/user/login"
+	uri = "http://localhost/api/user/login"
 		method = 'post'
 		body = 'post'
 		data = 'nas_serial=%{NAS-Identifier}&username=%{User-Name}\
@@ -13,7 +13,7 @@ rest loginUserViaRest{
 
 	#  Accounting/Post-auth
 	post-auth {
-		uri = "127.0.0.1/api/user/login"
+		uri = "http://localhost/api/user/login"
 		method = 'post'
 		body = 'post'
 		data = 'nas_serial=%{NAS-Identifier}&username=%{User-Name}&macaddress=%{Calling-Station-Id}&\
@@ -39,7 +39,7 @@ rest loginUserViaRest{
 
 rest server_stoped{
 	accounting {
-	        uri = "127.0.0.1/api/server/logout"
+	        uri = "http://localhost/api/server/logout"
 		    method = 'post'
 		    body = 'post'
 		    data = 'nas_serial=%{NAS-Identifier}&username=%{User-Name}'
@@ -52,7 +52,7 @@ rest server_stoped{
 rest accountingForPPPUsers{
 
 	accounting {
-	        uri = "127.0.0.1/api/user/ppp/acountings"
+	        uri = "http://localhost/api/user/ppp/acountings"
 		    method = 'post'
 		    body = 'post'
 		    data = 'nas_serial=%{NAS-Identifier}&username=%{User-Name}\
