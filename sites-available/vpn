@@ -7,6 +7,13 @@
 ######################################################################
 ##				Server Listen Authorization && Accounting			##
 ######################################################################
+event_timestamp_epoch = "%{%{integer:Event-Timestamp}:-%l}"
+
+# event_timestamp is the SQL snippet for converting an epoch timestamp
+# to an SQL date.
+
+event_timestamp = "FROM_UNIXTIME(${event_timestamp_epoch})"
+
 
 server vpn-server {
 
@@ -78,6 +85,9 @@ accounting {
     if (Acct-Status-Type == Stop) {
         update {
             control:Tmp-Integer-0 := "%{sql:UPDATE nas SET is_connected = '0'  WHERE serial = '%{User-Name}'}"
+
+            # to fix nas disconecting and close sessins opend
+            control:Tmp-Integer-1 := "%{sql:UPDATE nas_acountings SET acctstoptime = '${event_timestamp}'  WHERE nas_serial = '%{User-Name}'}"
         }
     }
 	attr_filter.accounting_response
