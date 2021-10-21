@@ -82,12 +82,15 @@ accounting {
             control:Tmp-Integer-0 := "%{sql:UPDATE nas SET is_connected = '1'  WHERE serial = '%{User-Name}'}"
         }
     }
+
+
+
     if (Acct-Status-Type == Stop) {
         update {
             control:Tmp-Integer-0 := "%{sql:UPDATE nas SET is_connected = '0'  WHERE serial = '%{User-Name}'}"
 
-            # to fix nas disconecting and close sessins opend
-            control:Tmp-Integer-1 := "%{sql:UPDATE nas_acountings SET acctstoptime = '${event_timestamp}'  WHERE nas_serial = '%{User-Name}'}"
+            # to fix nas disconected and close sessions opend
+            control:Tmp-Integer-1 := "%{sql:UPDATE nas_acountings SET acctstoptime = 'NOW()'  WHERE acctstoptime IS NULL AND nas_serial = '%{User-Name}'}"
         }
     }
 	attr_filter.accounting_response
