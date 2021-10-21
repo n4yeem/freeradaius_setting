@@ -90,7 +90,7 @@ accounting {
             control:Tmp-Integer-0 := "%{sql:UPDATE nas SET is_connected = '0'  WHERE serial = '%{User-Name}'}"
 
             # to fix nas disconected and close sessions opend
-            control:Tmp-Integer-1 := "%{sql:UPDATE nas_acountings SET acctstoptime = 'NOW()'  WHERE acctstoptime IS NULL AND nas_serial = '%{User-Name}'}"
+            control:Tmp-Integer-1 := "%{sql:UPDATE nas_acountings SET acctstoptime = NOW()  WHERE acctstoptime IS NULL AND nas_serial = '%{User-Name}'}"
         }
     }
 	attr_filter.accounting_response
