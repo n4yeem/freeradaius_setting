@@ -13,6 +13,7 @@ listen {
 	type = coa
 	ipaddr = *
 	port = 3799
+	secret = 123321
 	virtual_server = coa
 }
 
