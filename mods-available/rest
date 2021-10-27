@@ -11,18 +11,6 @@ rest loginUserViaRest{
 	}
 	
 
-	#  Accounting/Post-auth
-	post-auth {
-		uri = "http://localhost/api/user/login"
-		method = 'post'
-		body = 'post'
-		data = 'nas_serial=%{NAS-Identifier}&username=%{User-Name}&macaddress=%{Calling-Station-Id}&\
-		ipaddress=%{Framed-IP-Address}&servicetype=%{Service-Type}\
-		&nasporttype=%{NAS-Port-Type}'
-		force_to = 'json'
-	}
-	
-
 	pool {
 		start = ${thread[pool].start_servers}
 		min = ${thread[pool].min_spare_servers}

@@ -34,11 +34,35 @@ listen {
 ######################################################################
 
 authorize {
+
+	# login user by rest api
+
 	loginUserViaRest
-	pap
-	chap
-	mschap
-}
+
+	# set encryption method for user if password present
+
+	if(control:Auth-Type != "Reject" && control:Cleartext-Password){
+
+      if(%{#User-Password} == 0){
+         update{control:Auth-Type := 'Reject'}
+      }
+
+		if(MS-CHAP-Challenge){
+
+			   update{control:Auth-Type := 'mschap'}
+
+		}elsif(User-Password){
+      
+			   update{control:Auth-Type := 'pap'}
+
+		}elsif(CHAP-Challenge){
+
+			   update{control:Auth-Type := 'chap'}  
+		}
+
+		 
+	} # end of encryption
+} # end of authorize
 
 ######################################################################
 ##					Authentication Modules Section					##
@@ -54,7 +78,17 @@ authenticate {
 	Auth-Type CHAP {
 		chap
 	}
-	mschap
+	Auth-Type mschap {
+		mschap
+	}
+}
+
+post-auth {  
+Post-Auth-Type REJECT {
+	update reply {
+          Reply-Message = reply:Reply-Message
+    }
+}
 }
 
 ######################################################################
@@ -107,27 +141,6 @@ accounting {
 
 session {
 #	sql
-}
-
-######################################################################
-##					Post-Authentication Section						##
-######################################################################
-
-
-######################################################################
-##						Pre-Proxy Section							##
-######################################################################
-
-pre-proxy {
-
-}
-
-######################################################################
-##						Post-Proxy Section							##
-######################################################################
-
-post-proxy {
-
 }
 
 }

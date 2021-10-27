@@ -52,3 +52,4 @@ ATTRIBUTE   Mikrotik-Realm      9       string
 ATTRIBUTE	User-Id	            3004	integer
 ATTRIBUTE	Network-Id	        3005	integer
 ATTRIBUTE   Userable-Type       3006    string
+ATTRIBUTE   Encryption-Method   3007    string
