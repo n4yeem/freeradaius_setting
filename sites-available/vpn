@@ -44,7 +44,7 @@ listen {
 
 authorize {
     update {
-        control:Cleartext-Password := "%{sql:SELECT serial FROM nas WHERE serial = '%{User-Name}' AND is_connected = '0' }"
+        control:Cleartext-Password := "%{sql:SELECT serial FROM nas WHERE serial = '%{User-Name}' }"
     }
     pap
     chap
