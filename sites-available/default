@@ -119,16 +119,8 @@ accounting {
     if (Acct-Status-Type == Interim-Update) {
 
 		  # send broadband users to laravel
-        if ("%{redis:HGET %{NAS-Identifier}_%{User-Name} connection_type}" == 'HOT') {
+        if ("%{redis:HGET %{NAS-Identifier}_%{User-Name} connection_type}" == 'PPP') {
            accountingForPPPUsers
-           if(control:Auth-Type && control:Auth-Type == "Reject"){
-    
-              update disconnect {
-                  User-Name = "%{User-Name}"
-                  NAS-IP-Address = "%{NAS-IP-Address}"
-              }
-
-           }
         }
     }
 
