@@ -7,6 +7,7 @@
 ######################################################################
 ##				Server Listen Authorization && Accounting			##
 ######################################################################
+event_timestamp_epoch = "%l"
 event_timestamp_epoch = "%{%{integer:Event-Timestamp}:-%l}"
 
 # event_timestamp is the SQL snippet for converting an epoch timestamp
@@ -79,7 +80,7 @@ preacct {
 accounting {
     if (Acct-Status-Type == Start) {
         update {
-            control:Tmp-Integer-0 := "%{sql:UPDATE nas SET is_connected = '1'  WHERE serial = '%{User-Name}'}"
+            control:Tmp-Integer-0 := "%{sql:UPDATE nas SET is_connected = '1',last_connect=${event_timestamp}  WHERE serial = '%{User-Name}'}"
         }
     }
 
