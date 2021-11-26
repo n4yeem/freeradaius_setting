@@ -6,10 +6,10 @@ rest loginUserViaRest{
 		body = 'post'
 		data = 'nas_serial=%{NAS-Identifier}&username=%{User-Name}\
 		&macaddress=%{Calling-Station-Id}&ipaddress=%{Framed-IP-Address}\
-		&servicetype=%{Service-Type}'
+		&servicetype=%{Service-Type}&nasporttype=%{NAS-Port-Type}'
 		force_to = 'json'
 	}
-	
+
 
 	pool {
 		start = ${thread[pool].start_servers}
@@ -48,7 +48,7 @@ rest accountingForPPPUsers{
 		&upload=%{expr:(&Acct-Input-Gigawords << 32) | &Acct-Input-Octets}\
 		&download=%{expr:(&Acct-Output-Gigawords << 32) | &Acct-Output-Octets}\
 		&nas_ip=%{NAS-IP-Address}'
-						 
+
 		force_to = 'json'
 	}
 }
