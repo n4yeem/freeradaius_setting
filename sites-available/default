@@ -52,15 +52,15 @@ authorize {
 			   update{control:Auth-Type := 'mschap'}
 
 		}elsif(User-Password){
-      
+
 			   update{control:Auth-Type := 'pap'}
 
 		}elsif(CHAP-Challenge){
 
-			   update{control:Auth-Type := 'chap'}  
+			   update{control:Auth-Type := 'chap'}
 		}
 
-		 
+
 	} # end of encryption
 } # end of authorize
 
@@ -83,7 +83,7 @@ authenticate {
 	}
 }
 
-post-auth {  
+post-auth {
 Post-Auth-Type REJECT {
 	update reply {
           Reply-Message = reply:Reply-Message
@@ -105,21 +105,21 @@ preacct {
 
 accounting {
 	## Save Accounting Data On MySQL Database ##
-	
-	#if (Acct-Status-Type == Start) {  
+
+	#if (Acct-Status-Type == Start) {
    #}
 
 	update {
 	     # get user id
-        reply:User-Id := "%{redis:HGET %{NAS-Identifier}_%{User-Name} user_id}"
-        reply:Network-Id := "%{redis:HGET %{NAS-Identifier}_%{User-Name} network_id}"
-        reply:Userable-Type := "%{redis:HGET %{NAS-Identifier}_%{User-Name} userable_type}"
+        reply:User-Id := "%{redis:HGET ''%{NAS-Identifier}_%{User-Name}'' user_id}"
+        reply:Network-Id := "%{redis:HGET '%{NAS-Identifier}_%{User-Name}' network_id}"
+        reply:Userable-Type := "%{redis:HGET '%{NAS-Identifier}_%{User-Name}' userable_type}"
     }
 
     if (Acct-Status-Type == Interim-Update) {
 
 		  # send broadband users to laravel
-        if ("%{redis:HGET %{NAS-Identifier}_%{User-Name} connection_type}" == 'PPP') {
+        if ("%{redis:HGET '%{NAS-Identifier}_%{User-Name}' connection_type}" == 'PPP') {
            accountingForPPPUsers
         }
     }
@@ -128,7 +128,7 @@ accounting {
 	if (Acct-Status-Type == Stop) {
 	   # delete key from redis cache
 	   update {
-            control:Tmp-Integer-0 := "%{redis:DEL %{NAS-Identifier}_%{User-Name}}"
+            control:Tmp-Integer-0 := "%{redis:DEL '%{NAS-Identifier}_%{User-Name}'}"
         }
 	}
 	attr_filter.accounting_response
