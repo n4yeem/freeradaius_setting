@@ -111,7 +111,7 @@ accounting {
 
 	update {
 	     # get user id
-        reply:User-Id := "%{redis:HGET ''%{NAS-Identifier}_%{User-Name}'' user_id}"
+        reply:User-Id := "%{redis:HGET '%{NAS-Identifier}_%{User-Name}' user_id}"
         reply:Network-Id := "%{redis:HGET '%{NAS-Identifier}_%{User-Name}' network_id}"
         reply:Userable-Type := "%{redis:HGET '%{NAS-Identifier}_%{User-Name}' userable_type}"
     }
