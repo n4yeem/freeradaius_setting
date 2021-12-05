@@ -84,6 +84,11 @@ accounting {
         }
     }
 
+    if (Acct-Status-Type == Interim-Update) {
+        update {
+            control:Tmp-Integer-0 := "%{sql:UPDATE nas SET is_connected = '1',last_connect=NULL  WHERE serial = '%{User-Name}'}"
+        }
+    }
 
 
     if (Acct-Status-Type == Stop) {
