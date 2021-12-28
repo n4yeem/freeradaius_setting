@@ -96,7 +96,7 @@ accounting {
             control:Tmp-Integer-0 := "%{sql:UPDATE nas SET is_connected = '0',last_connect=NULL  WHERE serial = '%{User-Name}'}"
 
             # to fix nas disconected and close sessions opend
-            control:Tmp-Integer-1 := "%{sql:UPDATE nas_acountings SET acctstoptime = NOW()  WHERE acctstoptime IS NULL AND nas_serial = '%{User-Name}'}"
+            # control:Tmp-Integer-1 := "%{sql:UPDATE nas_acountings SET acctstoptime = NOW()  WHERE acctstoptime IS NULL AND nas_serial = '%{User-Name}'}"
         }
     }
 	attr_filter.accounting_response
@@ -119,7 +119,7 @@ post-auth {
         reply:Framed-IP-address := "%{sql:SELECT ip_address FROM nas WHERE serial = '%{User-Name}'}"
         reply:Port-Limit :="1"
         reply:Mikrotik-Group:="Servers"
-        reply:Session-Timeout:="600"
+        reply:Session-Timeout:="3600"
     }
 	Post-Auth-Type REJECT {
 		attr_filter.access_reject
