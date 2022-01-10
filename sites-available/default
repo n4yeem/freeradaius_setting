@@ -134,13 +134,6 @@ accounting {
            accountingForPPPUsers
         }
     }
-
-	if (Acct-Status-Type == Stop) {
-	   # delete key from redis cache
-	   update {
-            control:Tmp-Integer-0 := "%{redis:DEL '%{NAS-Identifier}_%{User-Name}'}"
-        }
-	}
 	sql
 	attr_filter.accounting_response
 }
